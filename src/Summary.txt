@@ -1,0 +1,16 @@
+Umang Thakur
+Late Days Left: 5 days
+
+Project Summary:
+The purpose of this project was to implement a basic key-value store server that can handle PUT, GET, and DELETE operations from a single client.
+The server should be single-threaded and respond to one request at a time. The goal was to gain experience with socket programming and communication
+using two transport layer protocols - TCP and UDP.To accomplish this, I developed a TCP & UDP server programs that listens on a specified port and
+logs all request/response activity with timestamps. It handles invalid requests. Similarly, I developed two client programs that can connect to the
+server,log activity, and demonstrate the PUT, GET, and DELETE operations. The clients also handle errors from the server properly.
+
+
+Technical Impression:
+While working on this project I got good exposure to socket programming in Java for communication over TCP and UDP and learned to structure the custom
+protocol for encoding requests/responses. Amongst TCP and UDP, UDP communication required more effort to ensure reliability. Overall, this
+project helped me in building as a solid foundation for distributed systems using low-level socket APIs. Key lessons include the need for timeouts,
+graceful error handling, and logging to debug distributed systems.
