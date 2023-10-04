@@ -13,8 +13,7 @@ import java.util.Properties;
 import java.util.Scanner;
 
 /**
- * TCPServer is a simple implementation of a TCP server in Java. It listens for incoming TCP
- * connections, processes client requests, and sends back responses.
+ * TCPServer is a simple implementation of a TCP server. It listens for incoming TCP connections.
  */
 public class TCPServer {
 
@@ -23,19 +22,19 @@ public class TCPServer {
     static Properties properties;
 
     /**
-     * The main function/start point of the TCPServer program.
+     * This method starts the TCPServer program.
      *
-     * @param args accepts command-line arguments
-     * @throws Exception if an error occurs during execution
+     * @param args takes port number as argument.
+     * @throws Exception when error occurrs during execution.
      */
     public static void main(String[] args) throws Exception {
 
-        System.out.print("Enter a port Number: ");
+        System.out.print("Enter port Number: ");
         Scanner port = new Scanner(System.in);
         int PORT = port.nextInt();
         if (PORT > 65535) {
-            throw new IllegalArgumentException("Invalid input!"
-                    + "Please provide a valid IP address and Port number and start again.");
+            throw new IllegalArgumentException("Invalid arguments!"
+                    + "Please provide valid IP address and PORT number.");
         }
 
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
@@ -69,8 +68,69 @@ public class TCPServer {
         }
     }
 
+
     /**
-     * Helper method to print Request messages.
+     * This method adds key-value pair to map and stores it in the properties file.
+     *
+     * @param key   key
+     * @param value value associated with key
+     * @return returns success message
+     * @throws Exception when error occurrs during operation.
+     */
+
+    static String addToMap(String key, String value) throws Exception {
+        properties.setProperty(key, value);
+        properties.store(write, null);
+        String result = "Inserted key \"" + key + "\" with value \"" + value + "\"";
+        return result;
+    }
+
+    /**
+     * This method deletes key-value pair from the map and updates the properties file.
+     *
+     * @param key deleted key
+     * @return returns successful deletion message
+     * @throws IOException when error occurrs during operation.
+     */
+    private static String deleteFromMap(String key) throws IOException {
+        String result = "";
+        if (properties.containsKey(key)) {
+            properties.remove(key);
+            properties.store(write, null);
+            result = "Deleted key \"" + key + "\"" + " successfully!";
+        } else {
+            result = "Key not found.";
+        }
+        return result;
+    }
+
+    /**
+     * This method Retrieves value associated with given key.
+     *
+     * @param key  key to retrieve the value
+     * @return returns associated value
+     * @throws IOException when error occurrs during operation.
+     */
+    private static String getFromMap(String key) throws IOException {
+        try {
+            String value = properties.getProperty(key);
+            String result = value == null ?
+                    "No value found for key \"" + key + "\""
+                    : "Key: \"" + key + "\" ,Value: \"" + value + "\"";
+            return result;
+        } catch (Exception e) {
+            throw new IOException("Error: " + e);
+        }
+    }
+
+
+
+    /**
+     * Helper Methods.
+     */
+
+    /**
+     * Method to print Request messages.
      *
      * @param str  message string
      * @param ip   client IP address
@@ -80,8 +140,9 @@ public class TCPServer {
         System.out.println(getTimeStamp() + " Request from: " + ip + ":" + port + " -> " + str);
     }
 
+
     /**
-     * Helper method to print Response messages.
+     * Method to print Response messages.
      *
      * @param str message string
      */
@@ -92,16 +153,16 @@ public class TCPServer {
 
 
     /**
-     * Helper method to process user request.
+     * Method to process user request.
      *
      * @param input user request
-     * @return the PUT/GET/DELETE operation
-     * @throws IllegalArgumentException in case of an invalid input
+     * @return returns the PUT/GET/DELETE operation
+     * @throws IllegalArgumentException when invalid input entered
      */
     private static String performOperation(String[] input) throws IllegalArgumentException {
         try {
             if (input.length < 2) {
-                throw new IllegalArgumentException("Invalid input: Insufficient arguments.");
+                throw new IllegalArgumentException("Insufficient arguments.");
             }
 
             String operation = input[0].toUpperCase();
@@ -112,7 +173,7 @@ public class TCPServer {
 
                     if (input.length < 3) {
                         throw new IllegalArgumentException(
-                                "Invalid input: Value is missing for PUT operation.");
+                                "Value is missing for PUT operation.");
                     }
 
                     String value = input[2];
@@ -136,66 +197,13 @@ public class TCPServer {
 
 
     /**
-     * Adds a key-value pair to the map and stores it in the properties file.
+     * Method to return the current timestamp.
      *
-     * @param key   the key to be inserted
-     * @param value value the value associated with the key
-     * @return a message indicating the successful insertion
-     * @throws Exception if an error occurs during the operation
-     */
-    static String addToMap(String key, String value) throws Exception {
-        properties.setProperty(key, value);
-        properties.store(write, null);
-        String result = "Inserted key \"" + key + "\" with value \"" + value + "\"";
-        return result;
-    }
-
-    /**
-     * Deletes a key-value pair from the map and updates the properties file.
-     *
-     * @param key the key to be deleted
-     * @return a message indicating the successful deletion or if the key was not found
-     * @throws IOException if an error occurs during the operation
-     */
-    private static String deleteFromMap(String key) throws IOException {
-        String result = "";
-        if (properties.containsKey(key)) {
-            properties.remove(key);
-            properties.store(write, null);
-            result = "Deleted key \"" + key + "\"" + " successfully!";
-        } else {
-            result = "Key not found.";
-        }
-        return result;
-    }
-
-    /**
-     * Retrieves the value associated with the provided key from the map.
-     *
-     * @param key the key to retrieve the value for
-     * @return the value associated with the key or a message if the key was not found
-     * @throws IOException if an error occurs during the operation
-     */
-    private static String getFromMap(String key) throws IOException {
-        try {
-            String value = properties.getProperty(key);
-            String result = value == null ?
-                    "No value found for key \"" + key + "\""
-                    : "Key: \"" + key + "\" ,Value: \"" + value + "\"";
-            return result;
-        } catch (Exception e) {
-            throw new IOException("Error: " + e);
-        }
-    }
-
-    /**
-     * Helper method to return the current timestamp.
-     *
-     * @return the current timestamp
+     * @return returns current timestamp
      */
     private static String getTimeStamp() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss.SSS");
-        return "<Time: " + simpleDateFormat.format(new Date()) + ">";
+        return "<Time Stamp: " + simpleDateFormat.format(new Date()) + ">";
     }
 
 }

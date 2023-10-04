@@ -161,6 +161,6 @@ class TCPClient {
      */
     private static String getTimeStamp() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss.SSS");
-        return "[Time: " + simpleDateFormat.format(new Date()) + "]";
+        return "[Time Stamp: " + simpleDateFormat.format(new Date()) + "]";
     }
 }
