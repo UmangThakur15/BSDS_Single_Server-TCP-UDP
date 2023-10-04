@@ -14,9 +14,7 @@ import java.util.Properties;
 import java.util.Scanner;
 
 /**
- * UDPServer is a simple implementation of a UDP server in Java.
- *
- * It listens for incoming UDP packets, processes client requests, and sends back responses.
+ *UDPServer is a simple implementation of a UDP server. It listens for incoming UDP connections.
  */
 public class UDPServer {
     static InputStream read;
@@ -24,19 +22,19 @@ public class UDPServer {
     static Properties properties;
 
     /**
-     * The main start point of the UDPServer program.
+     * This method starts the UDPServer program.
      *
-     * @param args command line arguments
+     * @param args takes port number as argument
      * @throws SocketException exception
      */
     public static void main(String[] args) throws Exception {
 
-        System.out.print("Enter a port Number: ");
+        System.out.print("Enter port Number: ");
         Scanner port = new Scanner(System.in);
         int PORT = port.nextInt();
         if ( PORT > 65535) {
-            throw new IllegalArgumentException("Invalid input!"
-                    + "Please provide a valid IP address and Port number.");
+            throw new IllegalArgumentException("Invalid Input!"
+                    + "Please provide valid IP address and PORT number.");
         }
 
         try (DatagramSocket datagramSocket = new DatagramSocket(PORT)){
@@ -89,12 +87,72 @@ public class UDPServer {
 
             }
         } catch (Exception e) {
-            errorLog("Error! Please make sure IP and Port are valid and try again.");
+            errorLog("Invalid IP address and PORT number!");
         }
     }
 
+
+
     /**
-     * Helper method to print Request messages.
+     * This method adds the key-value pair to the map.
+     *
+     * @param key    key
+     * @param value associated value
+     * @return success message of the operation
+     * @throws Exception when error occurrs during operation.
+     */
+    static String addToMap(String key, String value) throws Exception {
+        properties.setProperty(key, value);
+        properties.store(write, null);
+        String result = "Inserted key \"" + key + "\" with value \"" + value + "\"";
+        return result;
+    }
+
+    /**
+     * This method delete the key from the map.
+     *
+     * @param key takes key
+     * @return returns successful deletion message
+     * @throws IOException when error occurrs during operation.
+     */
+    private static String deleteFromMap(String key) throws IOException {
+        String result = "";
+        if(properties.containsKey(key)) {
+            properties.remove(key);
+            properties.store(write, null);
+            result = "Deleted key \"" + key + "\"" + " successfully!";
+        }
+        else {
+            result = "Key not found.";
+        }
+        return result;
+    }
+
+    /**
+     * This method Retrieves value associated with given key.
+     *
+     * @param key key to retrieve the value
+     * @return returns associated value
+     * @throws IOException when error occurrs during operation.
+     */
+    private static String getFromMap(String key) throws IOException {
+        String value = properties.getProperty(key);
+        String result = value == null ?
+                "No value found for key \"" + key + "\"" : "Key: \"" + key + "\" ,Value: \"" + value + "\"";
+        return result;
+    }
+
+
+
+
+
+    /**
+     * Helper methods.
+     */
+
+
+    /**
+     * Method to print Request messages.
      *
      * @param str    message string
      * @param ip   client IP address
@@ -105,7 +163,7 @@ public class UDPServer {
     }
 
     /**
-     * Helper method to print Response messages.
+     * Method to print Response messages.
      *
      * @param str message string
      */
@@ -113,7 +171,7 @@ public class UDPServer {
             " Response -> " + str + "\n");}
 
     /**
-     * Helper method to print Error messages.
+     * Method to print Error messages.
      *
      * @param err error message string
      */
@@ -121,7 +179,7 @@ public class UDPServer {
             " Error -> " + err);}
 
     /**
-     * Helper method to return the current timestamp.
+     * Method to return the current timestamp.
      *
      * @return the current timestamp
      */
@@ -131,7 +189,7 @@ public class UDPServer {
     }
 
     /**
-     * Helper method to process user request
+     * Method to process user request
      * @param input user request
      * @return result of PUT/GET/DELETE operation
      * @throws IllegalArgumentException in case of invalid input
@@ -172,53 +230,5 @@ public class UDPServer {
 
     }
 
-    /**
-     * Add the key-value pair to the map.
-     *
-     * @param key   the key
-     * @param value the value
-     * @return a message indicating the success of the operation
-     * @throws Exception if there is an error adding to the map
-     */
-    static String addToMap(String key, String value) throws Exception {
-        properties.setProperty(key, value);
-        properties.store(write, null);
-        String result = "Inserted key \"" + key + "\" with value \"" + value + "\"";
-        return result;
-    }
-
-    /**
-     * Delete the key from the map.
-     *
-     * @param key the key to delete
-     * @return a message indicating the success of the operation
-     * @throws IOException if there is an error deleting from the map
-     */
-    private static String deleteFromMap(String key) throws IOException {
-        String result = "";
-        if(properties.containsKey(key)) {
-            properties.remove(key);
-            properties.store(write, null);
-            result = "Deleted key \"" + key + "\"" + " successfully!";
-        }
-        else {
-            result = "Key not found.";
-        }
-        return result;
-    }
-
-    /**
-     * Get the value associated with the key from the map.
-     *
-     * @param key the key to retrieve the value for
-     * @return the value associated with the key or a message indicating that the key was not found
-     * @throws IOException if there is an error retrieving from the map
-     */
-    private static String getFromMap(String key) throws IOException {
-        String value = properties.getProperty(key);
-        String result = value == null ?
-                "No value found for key \"" + key + "\"" : "Key: \"" + key + "\" ,Value: \"" + value + "\"";
-        return result;
-    }
 
 }
