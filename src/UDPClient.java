@@ -10,9 +10,7 @@ import java.util.Objects;
 import java.util.Scanner;
 
 /**
- * UDPClient is a simple implementation of a UDP client in Java.
- * <p>
- * It sends requests to a UDP server, receives responses, and handles exceptions.
+ * UDPClient is a simple implementation of UDP client.It sends requests to UDP server.
  */
 public class UDPClient {
 
@@ -20,15 +18,15 @@ public class UDPClient {
     static Scanner scanner;
 
     /**
-     * The main start point of the UDPClient program.
+     * This method starts the UDPClient program.
      *
-     * @param args command line arguments containing server IP and port.
-     * @throws IOException if an I/O error occurs.
+     * @param args takes IP and port number as arguments.
+     * @throws IOException when I/O error occurs.
      */
     public static void main(String[] args) throws IOException {
         if (args.length != 2 || Integer.parseInt(args[1]) > 65535) {
             throw new IllegalArgumentException("Invalid argument! " +
-                    "Please provide valid IP and Port number and start again");
+                    "Please provide valid IP address and PORT number");
         }
         InetAddress serverIP = InetAddress.getByName(args[0]);
         int serverPort = Integer.parseInt(args[1]);
@@ -37,11 +35,10 @@ public class UDPClient {
         try (DatagramSocket datagramSocket = new DatagramSocket()) {
             datagramSocket.setSoTimeout(10000);
             String start = getTimeStamp();
-            System.out.println(start + " Client started");
+            System.out.println(start + " Client started on port number: ");
 
             while (true) {
-                System.out.println("---------------------------------------");
-                System.out.print("Operations: \n1. PUT\n2. GET\n3. DELETE\nChoose operation number: ");
+                System.out.print("Operations: \n1. PUT\n2. GET\n3. DELETE\nPlease select operation: ");
                 String operation = scanner.nextLine().trim();
                 if (Objects.equals(operation, "1")) {
                     getKey();
@@ -54,7 +51,7 @@ public class UDPClient {
                     getKey();
                     request = "DELETE " + key;
                 } else {
-                    System.out.println("Please choose a valid operation!");
+                    System.out.println("Invalid operation selected!");
                     continue;
                 }
 
@@ -62,7 +59,7 @@ public class UDPClient {
 
                 byte[] requestBuffer = request.getBytes();
                 if (requestBuffer.length > 65507) {
-                    System.out.println("Error: Request size exceeds the maximum allowed limit.");
+                    System.out.println("Error: Request size exceeds maximum allowed limit!");
                     continue;
                 }
 
@@ -78,20 +75,20 @@ public class UDPClient {
                     String result = new String(resultBuffer);
                     responseLog(result);
                 } catch (java.net.SocketTimeoutException e) {
-                    System.out.println("Timeout occurred. " +
-                            "The server did not respond within the specified time.");
+                    System.out.println("Connection timed out!");
                 }
             }
         } catch (UnknownHostException | SocketException e) {
             System.out.println(
-                    "Host or Port unknown error, try again!");
+                    "Invalid host or port number!");
         }
     }
 
+
     /**
-     * Gets the key from the user via the console input.
+     * This method gets key from the user.
      *
-     * @throws IOException if an error occurs during input reading
+     * @throws IOException when error occurs during input reading.
      */
     private static void getKey() throws IOException {
         System.out.print("Enter key: ");
@@ -99,17 +96,25 @@ public class UDPClient {
     }
 
     /**
-     * Gets the value from the user via the console input.
+     *This method gets the value from user
      *
-     * @throws IOException if an error occurs during input reading
+     * @throws IOException when error occurs during input reading.
      */
     private static void getValue() throws IOException {
         System.out.print("Enter Value: ");
         value = scanner.nextLine();
     }
 
+
+
+
     /**
-     * Helper method to print Request messages.
+     * Helper Methods.
+     */
+
+
+    /**
+     * Method to print Request messages.
      *
      * @param str message string
      */
@@ -119,7 +124,7 @@ public class UDPClient {
     }
 
     /**
-     * Helper method to print Response messages.
+     * Method to print Response messages.
      *
      * @param str message string
      */
@@ -129,12 +134,12 @@ public class UDPClient {
     }
 
     /**
-     * Helper method to return the current timestamp.
+     * Method to return the current timestamp.
      *
-     * @return the current timestamp
+     * @return returns current timestamp
      */
     private static String getTimeStamp() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss.SSS");
-        return "[Time: " + simpleDateFormat.format(new Date()) + "]";
+        return "[Time Stamp: " + simpleDateFormat.format(new Date()) + "]";
     }
 }

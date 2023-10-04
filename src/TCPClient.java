@@ -72,7 +72,7 @@ class TCPClient {
         } catch (UnknownHostException | SocketException e) {
             System.out.println("Invalid host or port number!");
         } catch (SocketTimeoutException e) {
-            System.out.println("Connection timed out, try again!");
+            System.out.println("Connection timed out!");
         } catch (Exception e) {
             System.out.println("Exception occurred!" + e);
         }
