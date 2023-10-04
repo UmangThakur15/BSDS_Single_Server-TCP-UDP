@@ -5,8 +5,7 @@ import java.util.Date;
 import java.util.Objects;
 
 /**
- * TCPClient is a simple implementation of a TCP client in Java language. It sends requests to a TCP
- * server, receives responses, and handles exceptions.
+ * TCPClient is a simple implementation of a TCP client side. It sends requests to a TCP server.
  */
 
 class TCPClient {
@@ -15,16 +14,16 @@ class TCPClient {
     static BufferedReader bufferedReader;
 
     /**
-     * The main function/start point of the TCPClient program.
+     * This method starts the TCPClient program.
      *
-     * @param args command-line arguments where it expects two arguments: Host name and port number
-     * @throws Exception an error occurring during execution.
+     * @param args takes Host name and port number as arguments.
+     * @throws Exception when error occurrs during execution.
      */
     public static void main(String[] args) throws Exception {
 
         if (args.length != 2 || Integer.parseInt(args[1]) > 65535) {
-            throw new IllegalArgumentException("Invalid arguments. " +
-                    "Please provide valid IP and PORT number and start again.");
+            throw new IllegalArgumentException("Invalid arguments " +
+                    "Please provide valid IP address and PORT number");
         }
 
         InetAddress serverIP = InetAddress.getByName(args[0]);
@@ -38,11 +37,10 @@ class TCPClient {
             DataOutputStream dataOutputStream = new DataOutputStream(s.getOutputStream());
             bufferedReader = new BufferedReader(new InputStreamReader(System.in));
             String start = getTimeStamp();
-            System.out.println(start + " Client started on port: " + s.getPort());
+            System.out.println(start + " Client started on port number: " + s.getPort());
 
             while (true) {
-                System.out.println("---------------------------------------");
-                System.out.print("Operations: \n1. PUT\n2. GET\n3. DELETE\nChoose operation number: ");
+                System.out.print("Operations: \n1. PUT\n2. GET\n3. DELETE\nPlease select operation: ");
                 String operation = bufferedReader.readLine().trim();
                 if (Objects.equals(operation, "1")) {
                     getKey();
@@ -55,7 +53,7 @@ class TCPClient {
                     getKey();
                     request = "DELETE " + key;
                 } else {
-                    System.out.println("Please choose a valid operation.");
+                    System.out.println("Invalid operation selected!");
                     continue;
                 }
 
@@ -66,46 +64,52 @@ class TCPClient {
                 String response = receivePacket(dataInputStream);
 
                 if (response.startsWith("ERROR")) {
-                    System.out.println("Received error response from the server: " + response);
+                    System.out.println("Received error response from the server side: " + response);
                 } else {
                     responseLog(response);
                 }
             }
         } catch (UnknownHostException | SocketException e) {
-            System.out.println("Host or Port unknown, please provide a valid hostname and port number.");
+            System.out.println("Invalid host or port number!");
         } catch (SocketTimeoutException e) {
-            System.out.println("Connection timed out. Please check the server availability and try again.");
+            System.out.println("Connection timed out, try again!");
         } catch (Exception e) {
             System.out.println("Exception occurred!" + e);
         }
     }
 
     /**
-     * Gets the key from the user via the console input.
+     * This method is to get key from user.
      *
-     * @throws IOException if an error occurs during input reading
+     * @throws IOException when error occurs during input reading.
      */
     private static void getKey() throws IOException {
         System.out.print("Enter key: ");
         key = bufferedReader.readLine();
     }
 
+
     /**
-     * Gets the value from the user via the console input.
+     *This method is to get value from user.
      *
-     * @throws IOException if an error occurs during input reading
+     * @throws IOException when error occurs during input reading.
      */
     private static void getValue() throws IOException {
         System.out.print("Enter Value: ");
         value = bufferedReader.readLine();
     }
 
+
     /**
-     * Helper method to send a packet to the server.
+     * Helper Methods
+     */
+
+    /**
+     *Method to send packet to the server.
      *
-     * @param outputStream the output stream to write the packet
-     * @param packet       the packet to send
-     * @throws IOException if an error occurs during writing
+     * @param outputStream output stream to write packet
+     * @param packet       packet to send
+     * @throws IOException when error occurs during input writing.
      */
     private static void sendPacket(DataOutputStream outputStream, String packet) throws IOException {
         outputStream.writeUTF(packet);
@@ -113,19 +117,22 @@ class TCPClient {
         requestLog(packet);
     }
 
+
     /**
-     * Helper method to receive a packet from the server.
+     * Method to receive packet from the server.
      *
-     * @param inputStream the input stream to read the packet
-     * @return the received packet
-     * @throws IOException if an error occurs during reading
+     * @param inputStream input stream to read packet
+     * @return received packet
+     * @throws IOException when error occurs during input reading.
      */
     private static String receivePacket(DataInputStream inputStream) throws IOException {
         return inputStream.readUTF();
     }
 
+
+
     /**
-     * Helper method to print Request messages.
+     *Method to print Request messages.
      *
      * @param str message string
      */
@@ -133,8 +140,11 @@ class TCPClient {
         System.out.println(getTimeStamp() + " Request: " + str);
     }
 
+
+
+
     /**
-     * Helper method to print Response messages.
+     *Method to print Response messages.
      *
      * @param str message string
      */
@@ -142,10 +152,12 @@ class TCPClient {
         System.out.println(getTimeStamp() + " Response: " + str + "\n");
     }
 
+
+
     /**
-     * Helper method to return the current timestamp.
+     *Method to return current timestamp.
      *
-     * @return the current timestamp
+     * @return returns current timestamp
      */
     private static String getTimeStamp() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss.SSS");
